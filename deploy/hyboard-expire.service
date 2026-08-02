@@ -1,0 +1,15 @@
+[Unit]
+Description=Expire due Hysteria accesses managed by HyBoard
+
+[Service]
+Type=oneshot
+User=hyboard
+Group=hyboard
+EnvironmentFile=/etc/hyboard/hyboard.env
+WorkingDirectory=/var/lib/hyboard
+ExecStart=/opt/hyboard/.venv/bin/hyboard-expire
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/hyboard

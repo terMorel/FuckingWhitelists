@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>Вход — FW Control</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/layout-fix.css">
+</head>
+<body class="login-page">
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <main class="login-shell">
+    <section class="login-brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span></div>
+      <p class="eyebrow">FRANKFURT · PRIVATE NETWORK</p>
+      <h1>Твой интернет.<br><em>Под твоим контролем.</em></h1>
+      <p class="login-copy">Персональные ключи Hysteria2, быстрый доступ и ни одного лишнего движения в рабочем VPN.</p>
+      <div class="signal-line"><i></i><span>Нативный транспорт остаётся независимым</span></div>
+    </section>
+    <section class="login-card glass">
+      <div class="card-top"><span class="live-dot"></span><span>CONTROL CENTER</span></div>
+      <h2>С возвращением</h2>
+      <p>Войдите, чтобы управлять доступом.</p>
+      {% if demo %}<div class="demo-hint">Демо-пароль: <strong>demo</strong></div>{% endif %}
+      {% if error %}<div class="error-banner">{{ error }}</div>{% endif %}
+      <form method="post" action="/login">
+        <label for="password">Пароль администратора</label>
+        <div class="password-field">
+          <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+          <button type="button" class="reveal" aria-label="Показать пароль">●</button>
+        </div>
+        <button class="primary login-button" type="submit"><span>Открыть панель</span><b>→</b></button>
+      </form>
+      <div class="secure-note"><span>◇</span> Защищённая административная сессия</div>
+    </section>
+  </main>
+  <script src="/static/login.js" defer></script>
+</body>
+</html>

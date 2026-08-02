@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fucking-whitelists-control"
+version = "0.1.0"
+description = "A safe companion control panel for a native Hysteria 2 server"
+readme = "HYBOARD.md"
+requires-python = ">=3.10"
+dependencies = [
+  "argon2-cffi==23.1.0",
+  "fastapi==0.116.1",
+  "jinja2==3.1.6",
+  "itsdangerous==2.2.0",
+  "python-multipart==0.0.20",
+  "qrcode[pil]==8.2",
+  "uvicorn[standard]==0.35.0",
+]
+
+[project.optional-dependencies]
+test = [
+  "httpx==0.28.1",
+  "pytest==8.4.1",
+  "ruff==0.12.7",
+]
+
+[project.scripts]
+hyboard = "hyboard.main:run"
+hyboard-expire = "hyboard.expire:run"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["hyboard*"]
+
+[tool.setuptools.package-data]
+hyboard = ["templates/*.html", "static/*.css", "static/*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S101", "S603"]

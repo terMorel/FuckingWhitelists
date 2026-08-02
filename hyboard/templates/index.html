@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="csrf-token" content="{{ csrf }}">
+  <title>FW Control</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <aside class="sidebar">
+    <div class="logo"><div class="brand-mark small"><span></span><span></span></div><div><strong>FW</strong><small>CONTROL</small></div></div>
+    <nav>
+      <button class="nav-item active" data-view="overview"><span>⌁</span>Обзор</button>
+      <button class="nav-item" data-view="users"><span>◉</span>Доступы <b id="nav-count">—</b></button>
+      <button class="nav-item" data-view="activity"><span>↯</span>События</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="server-pill"><i id="side-dot"></i><div><small>FRANKFURT</small><strong id="side-status">Проверка…</strong></div></div>
+      <form action="/logout" method="post"><button class="logout" type="submit">Выйти <span>↗</span></button></form>
+    </div>
+  </aside>
+
+  <main class="workspace">
+    <header class="topbar">
+      <button class="mobile-menu" aria-label="Меню">☰</button>
+      <div><p class="eyebrow">PRIVATE NETWORK / FRANKFURT</p><h1 id="page-title">Обзор системы</h1></div>
+      <div class="top-actions">
+        {% if demo %}<span class="demo-badge">ДЕМО</span>{% endif %}
+        <button class="icon-button" id="refresh" title="Обновить">↻</button>
+        <button class="primary" data-open-create><span>＋</span> Новый доступ</button>
+      </div>
+    </header>
+
+    <section class="view active" id="view-overview">
+      <div class="hero-grid">
+        <article class="hero-card">
+          <div class="hero-orbit"><div class="orbit-ring"></div><div class="pulse-core"><span>H2</span></div></div>
+          <div class="hero-copy"><div class="status-tag"><i></i><span id="hero-status">Подключаемся</span></div><h2>Нативный Hysteria2<br><em>работает отдельно.</em></h2><p>Панель управляет доступами, не проходя через канал данных.</p></div>
+          <div class="hero-meta"><div><small>ТРАНСПОРТ</small><strong>UDP / 443</strong></div><div><small>КОНТУР</small><strong>Frankfurt</strong></div><div><small>ВЛИЯНИЕ ПАНЕЛИ</small><strong>0 мс</strong></div></div>
+        </article>
+        <article class="metric-card accent"><div class="metric-head"><span>Активные доступы</span><i>◉</i></div><strong id="user-count">—</strong><p>персональных ключей</p><div class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></article>
+        <article class="metric-card"><div class="metric-head"><span>Состояние сервиса</span><i>◇</i></div><strong class="word" id="service-state">Проверка</strong><p id="service-copy">Получаем состояние</p><div class="health-line"><span id="health-fill"></span></div></article>
+      </div>
+      <div class="section-heading"><div><p class="eyebrow">QUICK CONTROL</p><h2>Последние доступы</h2></div><button class="text-button" data-view-link="users">Смотреть все <span>→</span></button></div>
+      <div class="user-grid" id="recent-users"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></div>
+      <div class="section-heading"><div><p class="eyebrow">SECURITY LOG</p><h2>Недавние действия</h2></div><button class="text-button" data-view-link="activity">Весь журнал <span>→</span></button></div>
+      <div class="activity-list compact" id="recent-audit"></div>
+    </section>
+
+    <section class="view" id="view-users">
+      <div class="list-toolbar"><div class="search"><span>⌕</span><input id="search" placeholder="Найти доступ…"></div><div class="filter-pills"><button class="active" data-filter="all">Все</button><button data-filter="active">Активные</button><button data-filter="expired">Истёкшие</button></div></div>
+      <div class="users-table-wrap">
+        <table class="users-table"><thead><tr><th>Пользователь</th><th>Статус</th><th>Срок</th><th>Создан</th><th></th></tr></thead><tbody id="users-body"></tbody></table>
+        <div class="empty-state" id="users-empty" hidden><div>◇</div><h3>Ничего не найдено</h3><p>Измените запрос или создайте новый доступ.</p></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-activity">
+      <article class="activity-panel"><div class="panel-head"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Журнал действий</h2></div><span>Хранится только на сервере</span></div><div class="activity-list" id="audit-list"></div></article>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="create-modal" hidden>
+    <section class="modal glass"><button class="modal-close" data-close>×</button><p class="eyebrow">NEW ACCESS</p><h2>Создать персональный ключ</h2><p class="modal-copy">Подключение появится сразу — перезапуск Hysteria не нужен.</p>
+      <form id="create-form">
+        <label>Имя доступа<input name="username" placeholder="ivan-phone" pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,63}" required><small>Латиница, цифры, точка, дефис или подчёркивание</small></label>
+        <label>Комментарий<input name="note" placeholder="Телефон Ивана"></label>
+        <label>Срок действия<input name="expires_at" type="datetime-local"><small>Можно оставить без ограничения</small></label>
+        <div class="modal-actions"><button type="button" class="secondary" data-close>Отмена</button><button type="submit" class="primary">Создать ключ <span>→</span></button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="access-modal" hidden>
+    <section class="modal access-modal glass"><button class="modal-close" data-close>×</button><div class="access-head"><div><p class="eyebrow">PERSONAL ACCESS</p><h2 id="access-title">Готово</h2></div><span class="success-seal">✓</span></div><p class="modal-copy">Отсканируйте QR в Hysteria2-совместимом приложении или скопируйте ссылку.</p>
+      <div class="qr-stage"><img id="access-qr" alt="Персональный QR-код"><div class="scan-corners"></div></div>
+      <div class="uri-box"><code id="access-uri"></code><button id="copy-uri">Копировать</button></div>
+      <p class="secret-warning">Показывайте этот QR только владельцу устройства. Он даёт полный доступ к VPN.</p>
+      <div class="modal-actions"><button class="secondary" data-close>Закрыть</button><button class="primary" id="download-qr">Скачать QR</button></div>
+    </section>
+  </div>
+
+  <div class="toast-stack" id="toasts"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
+

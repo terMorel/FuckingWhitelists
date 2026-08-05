@@ -28,6 +28,7 @@ test = [
 [project.scripts]
 hyboard = "hyboard.main:run"
 hyboard-expire = "hyboard.expire:run"
+hyboard-monitor = "hyboard.monitoring:run"
 
 [tool.setuptools]
 include-package-data = true

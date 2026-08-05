@@ -76,6 +76,9 @@ class SocketBackend:
     def status(self) -> dict:
         return self._call("status")
 
+    def monitoring(self) -> dict:
+        return self._call("monitor")
+
     def create(self, username: str) -> AccessBundle:
         data = self._call("add", validate_username(username))
         return AccessBundle(
@@ -114,6 +117,23 @@ class DemoBackend:
 
     def status(self) -> dict:
         return {"service": "active", "udp443": True, "mode": "demo"}
+
+    def monitoring(self) -> dict:
+        return {
+            "cpu_percent": 18.0,
+            "memory_percent": 42.0,
+            "disk_percent": 36.0,
+            "load1": 0.24,
+            "net_rx_bytes": 8_900_000_000,
+            "net_tx_bytes": 2_400_000_000,
+            "udp_errors": 0,
+            "services": {
+                "hysteria": "active",
+                "hyboard": "active",
+                "nginx": "active",
+                "x-ui": "active",
+            },
+        }
 
     @staticmethod
     def _bundle(username: str) -> AccessBundle:

@@ -34,6 +34,10 @@ Hysteria2 выбирается для скорости и повседневно
 - показывает QR и URI;
 - ротирует и отзывает ключи;
 - поддерживает срок действия;
+- показывает накопленный трафик, текущую скорость и подключения отдельно для каждого ключа;
+- собирает загрузку CPU, RAM, диска, сетевую скорость, состояние служб и ошибки UDP;
+- выводит предупреждения и при необходимости отправляет их в Telegram;
+- принимает результаты независимых внешних проверок, которые помогают отличать сбой VPS от блокировки на стороне сети клиента;
 - показывает состояние сервиса и ведёт журнал действий.
 
 Панель **не находится в пути VPN-трафика**, не переносит Hysteria2 в 3x-ui и не получает доступ к WireGuard, Xray или сетевым правилам.
@@ -46,7 +50,7 @@ VPN-трафик: клиент ──> Hysteria2 ──> интернет
                                                     ──> узкий root-broker ──> hy-access
 ```
 
-Код панели находится в [`hyboard/`](hyboard/), установка — в [`deploy/`](deploy/), полная инструкция — в [`HYBOARD.md`](HYBOARD.md). Безопасный доступ с Android без постоянного SSH-туннеля описан отдельно в [`HYBOARD_REMOTE_ACCESS.md`](HYBOARD_REMOTE_ACCESS.md).
+Код панели находится в [`hyboard/`](hyboard/), установка — в [`deploy/`](deploy/), полная инструкция — в [`HYBOARD.md`](HYBOARD.md). Мониторинг, Telegram и внешние наблюдатели описаны в [`HYBOARD_MONITORING.md`](HYBOARD_MONITORING.md). Безопасный доступ с Android без постоянного SSH-туннеля описан отдельно в [`HYBOARD_REMOTE_ACCESS.md`](HYBOARD_REMOTE_ACCESS.md).
 
 ## Быстрый старт панели
 
@@ -73,6 +77,7 @@ ssh -L 28474:127.0.0.1:28474 root@SERVER_IP
 ### Обычный VPN и панель
 
 - [`HYBOARD.md`](HYBOARD.md) — возможности, безопасность, установка и проверка панели;
+- [`HYBOARD_MONITORING.md`](HYBOARD_MONITORING.md) — показатели, хранение, предупреждения, Telegram и внешние наблюдатели;
 - [`HYBOARD_REMOTE_ACCESS.md`](HYBOARD_REMOTE_ACCESS.md) — HTTPS/mTLS-доступ с Android без постоянного SSH-туннеля;
 - [`INTERNAL_CONTEXT_HYSTERIA2_HYBOARD.md`](INTERNAL_CONTEXT_HYSTERIA2_HYBOARD.md) — решения текущего этапа, фактическая архитектура, правила продолжения работ и план аварийного восстановления;
 - [`INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md`](INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md) — предыдущий контекст Xray/VLESS Reality и 3x-ui.

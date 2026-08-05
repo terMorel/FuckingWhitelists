@@ -12,7 +12,7 @@ from pathlib import Path
 
 SOCKET_PATH = Path("/run/hyboard/helper.sock")
 HELPER_PATH = Path("/usr/local/libexec/hyboard-helper")
-ALLOWED = {"list", "status", "add", "show", "rotate", "revoke"}
+ALLOWED = {"list", "status", "monitor", "add", "show", "rotate", "revoke"}
 USERNAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 
 
@@ -33,7 +33,7 @@ class Handler(socketserver.StreamRequestHandler):
             self.respond(error="Unsupported operation")
             return
         command = [str(HELPER_PATH), action]
-        if action not in {"list", "status"}:
+        if action not in {"list", "status", "monitor"}:
             if not isinstance(username, str) or not USERNAME.fullmatch(username):
                 self.respond(error="Invalid username")
                 return

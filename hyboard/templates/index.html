@@ -15,6 +15,7 @@
     <nav>
       <button class="nav-item active" data-view="overview"><span>⌁</span>Обзор</button>
       <button class="nav-item" data-view="users"><span>◉</span>Доступы <b id="nav-count">—</b></button>
+      <button class="nav-item" data-view="monitoring"><span>⌁</span>Мониторинг <b id="nav-alerts" hidden>0</b></button>
       <button class="nav-item" data-view="activity"><span>↯</span>События</button>
     </nav>
     <div class="sidebar-foot">
@@ -33,6 +34,8 @@
         <button class="primary" data-open-create><span>＋</span> Новый доступ</button>
       </div>
     </header>
+
+    <div class="alerts" id="alerts" hidden></div>
 
     <section class="view active" id="view-overview">
       <div class="hero-grid">
@@ -53,8 +56,28 @@
     <section class="view" id="view-users">
       <div class="list-toolbar"><div class="search"><span>⌕</span><input id="search" placeholder="Найти доступ…"></div><div class="filter-pills"><button class="active" data-filter="all">Все</button><button data-filter="active">Активные</button><button data-filter="expired">Истёкшие</button></div></div>
       <div class="users-table-wrap">
-        <table class="users-table"><thead><tr><th>Пользователь</th><th>Статус</th><th>Срок</th><th>Создан</th><th></th></tr></thead><tbody id="users-body"></tbody></table>
+        <table class="users-table"><thead><tr><th>Пользователь</th><th>Подключение</th><th>Скачано</th><th>Отдано</th><th>Всего</th><th>Срок</th><th></th></tr></thead><tbody id="users-body"></tbody></table>
         <div class="empty-state" id="users-empty" hidden><div>◇</div><h3>Ничего не найдено</h3><p>Измените запрос или создайте новый доступ.</p></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-monitoring">
+      <div class="monitor-grid">
+        <article class="monitor-card wide"><div class="metric-head"><span>Текущая скорость сервера</span><i>↕</i></div><div class="speed-pair"><div><small>ИЗ СЕРВЕРА</small><strong id="monitor-down">—</strong></div><div><small>В СЕРВЕР</small><strong id="monitor-up">—</strong></div></div><p id="monitor-updated">Ожидаем первую выборку</p></article>
+        <article class="monitor-card"><div class="metric-head"><span>CPU / нагрузка</span><i>◇</i></div><strong id="monitor-cpu">—</strong><p id="monitor-load">load average —</p></article>
+        <article class="monitor-card"><div class="metric-head"><span>Оперативная память</span><i>▦</i></div><strong id="monitor-memory">—</strong><div class="health-line"><span id="memory-fill"></span></div></article>
+        <article class="monitor-card"><div class="metric-head"><span>Диск</span><i>▤</i></div><strong id="monitor-disk">—</strong><div class="health-line"><span id="disk-fill"></span></div></article>
+        <article class="monitor-card"><div class="metric-head"><span>Ошибки UDP</span><i>!</i></div><strong id="monitor-udp">—</strong><p>Ошибки приёма ядра</p></article>
+      </div>
+
+      <div class="monitor-layout">
+        <article class="monitor-panel"><div class="panel-head"><div><p class="eyebrow">LAST 60 SAMPLES</p><h2>Нагрузка и трафик</h2></div><span>30 дней истории</span></div><div class="chart-legend"><span><i class="chart-rx"></i>Из сервера</span><span><i class="chart-tx"></i>В сервер</span></div><div class="history-chart" id="history-chart"><p>Недостаточно данных</p></div></article>
+        <article class="monitor-panel"><div class="panel-head"><div><p class="eyebrow">COMPONENTS</p><h2>Службы</h2></div></div><div class="service-list" id="service-list"></div></article>
+      </div>
+
+      <div class="monitor-layout">
+        <article class="monitor-panel"><div class="panel-head"><div><p class="eyebrow">EXTERNAL VIEW</p><h2>Внешние проверки</h2></div></div><div class="probe-list" id="probe-list"></div></article>
+        <article class="monitor-panel"><div class="panel-head"><div><p class="eyebrow">DATA SOURCES</p><h2>Источники данных</h2></div></div><div class="service-list" id="source-list"></div></article>
       </div>
     </section>
 

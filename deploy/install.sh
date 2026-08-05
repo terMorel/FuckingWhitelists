@@ -57,16 +57,34 @@ elif ! grep -q '^HYBOARD_HELPER_SOCKET=' "$ENV_DIR/hyboard.env"; then
   printf 'HYBOARD_HELPER_SOCKET=/run/hyboard/helper.sock\n' >> "$ENV_DIR/hyboard.env"
 fi
 
+declare -A MONITOR_DEFAULTS=(
+  [HYBOARD_TRAFFIC_STATS_ENABLED]=0
+  [HYBOARD_TRAFFIC_STATS_URL]=http://127.0.0.1:9999
+  [HYBOARD_TRAFFIC_STATS_SECRET]=
+  [HYBOARD_TELEGRAM_BOT_TOKEN]=
+  [HYBOARD_TELEGRAM_CHAT_ID]=
+  [HYBOARD_PROBE_TOKEN]=
+  [HYBOARD_PROBE_STALE_SECONDS]=900
+)
+for key in "${!MONITOR_DEFAULTS[@]}"; do
+  if ! grep -q "^${key}=" "$ENV_DIR/hyboard.env"; then
+    printf '%s=%s\n' "$key" "${MONITOR_DEFAULTS[$key]}" >> "$ENV_DIR/hyboard.env"
+  fi
+done
+
 install -o root -g root -m 0644 "$SOURCE_DIR/deploy/hyboard.service" /etc/systemd/system/hyboard.service
 install -o root -g root -m 0644 "$SOURCE_DIR/deploy/hyboard-helper.service" /etc/systemd/system/hyboard-helper.service
 install -o root -g root -m 0644 "$SOURCE_DIR/deploy/hyboard-expire.service" /etc/systemd/system/hyboard-expire.service
 install -o root -g root -m 0644 "$SOURCE_DIR/deploy/hyboard-expire.timer" /etc/systemd/system/hyboard-expire.timer
+install -o root -g root -m 0644 "$SOURCE_DIR/deploy/hyboard-monitor.service" /etc/systemd/system/hyboard-monitor.service
+install -o root -g root -m 0644 "$SOURCE_DIR/deploy/hyboard-monitor.timer" /etc/systemd/system/hyboard-monitor.timer
 
 systemctl daemon-reload
-systemctl enable hyboard-helper.service hyboard.service hyboard-expire.timer
+systemctl enable hyboard-helper.service hyboard.service hyboard-expire.timer hyboard-monitor.timer
 systemctl restart hyboard-helper.service
 systemctl restart hyboard.service
 systemctl start hyboard-expire.timer
+systemctl start hyboard-monitor.timer
 rm -f /etc/sudoers.d/hyboard
 
 for _attempt in $(seq 1 20); do

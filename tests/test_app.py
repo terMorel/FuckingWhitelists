@@ -8,17 +8,21 @@ from hyboard.config import Settings
 from hyboard.main import create_app
 
 
-def client(tmp_path):
+def client(tmp_path, **overrides):
+    values = {
+        "db_path": tmp_path / "test.db",
+        "backend": "demo",
+        "helper_socket": "unused",
+        "session_secret": "x" * 48,
+        "admin_hash": "",
+        "cookie_secure": False,
+        "bind": "127.0.0.1",
+        "port": 28474,
+        "demo": True,
+    }
+    values.update(overrides)
     settings = Settings(
-        db_path=tmp_path / "test.db",
-        backend="demo",
-        helper_socket="unused",
-        session_secret="x" * 48,
-        admin_hash="",
-        cookie_secure=False,
-        bind="127.0.0.1",
-        port=28474,
-        demo=True,
+        **values,
     )
     return TestClient(create_app(settings))
 
@@ -41,7 +45,10 @@ def test_health_and_auth(tmp_path):
     assert health.headers["cache-control"] == "no-store"
     assert test_client.get("/api/state").status_code == 401
     login(test_client)
-    assert test_client.get("/api/state").status_code == 200
+    state = test_client.get("/api/state")
+    assert state.status_code == 200
+    assert "monitoring" in state.json()
+    assert "traffic" in state.json()["users"][0]
 
 
 def test_create_view_rotate_and_revoke(tmp_path):
@@ -77,3 +84,31 @@ def test_csrf_and_username_validation(tmp_path):
         json={"username": "bad name!", "note": "", "expires_at": None},
     )
     assert response.status_code == 400
+
+
+def test_manual_collection_requires_csrf(tmp_path):
+    test_client = client(tmp_path)
+    csrf = login(test_client)
+    assert test_client.post("/api/monitoring/collect").status_code == 403
+    response = test_client.post(
+        "/api/monitoring/collect", headers={"X-CSRF-Token": csrf}
+    )
+    assert response.status_code == 200
+    assert "system" in response.json()
+
+
+def test_external_probe_authentication(tmp_path):
+    test_client = client(tmp_path, probe_token="p" * 32)
+    assert test_client.post(
+        "/api/probes/mobile-mts", json={"ok": True}
+    ).status_code == 401
+    response = test_client.post(
+        "/api/probes/mobile-mts",
+        headers={"Authorization": f"Bearer {'p' * 32}"},
+        json={"ok": True, "latency_ms": 84, "network": "MTS mobile"},
+    )
+    assert response.status_code == 200
+    csrf = login(test_client)
+    test_client.post("/api/monitoring/collect", headers={"X-CSRF-Token": csrf})
+    probes = test_client.get("/api/state").json()["monitoring"]["probes"]
+    assert probes[0]["name"] == "mobile-mts"

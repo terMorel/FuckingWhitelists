@@ -1,0 +1,23 @@
+[Unit]
+Description=Collect HyBoard monitoring metrics
+After=hyboard-helper.service
+Requires=hyboard-helper.service
+
+[Service]
+Type=oneshot
+User=hyboard
+Group=hyboard
+EnvironmentFile=/etc/hyboard/hyboard.env
+WorkingDirectory=/var/lib/hyboard
+ExecStart=/opt/hyboard/.venv/bin/hyboard-monitor
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/hyboard
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true

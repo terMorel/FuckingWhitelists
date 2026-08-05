@@ -82,3 +82,7 @@ sudo systemctl restart hyboard.service
 pytest
 ruff check .
 ```
+
+## Доступ без SSH-туннеля
+
+Для телефона или постоянного браузерного доступа панель может быть опубликована на отдельном TCP/8443 через HTTPS с обязательным клиентским сертификатом. Эта схема сохраняет loopback-bind HyBoard и не занимает TCP/UDP 443. Пошаговая установка, Android-инструкция и откат описаны в [`HYBOARD_REMOTE_ACCESS.md`](HYBOARD_REMOTE_ACCESS.md).

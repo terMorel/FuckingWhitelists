@@ -325,3 +325,20 @@ ss -lunp | grep ':443'
 Активные предупреждения видны в интерфейсе. Telegram-интеграция отправляет только смену состояния и восстановление. API внешних probes позволяет наблюдателю из российской сети сообщать результат реальной проверки; без такого наблюдателя панель не делает ложный вывод о блокировке по одному состоянию VPS.
 
 Инварианты сохранены: код не меняет конфигурацию Hysteria, Nginx/mTLS, `.p12`, Xray, WireGuard, FreeTurn, firewall или маршруты. Traffic Stats API, Telegram и probe token выключены по умолчанию и включаются только явными переменными в `/etc/hyboard/hyboard.env`. Подробности — в [`HYBOARD_MONITORING.md`](HYBOARD_MONITORING.md).
+
+## 19. Фактическое состояние мониторинга и аварийного восстановления
+
+По состоянию на **6 августа 2026 года** на рабочем Hysteria2 включён официальный loopback-only Traffic Stats API. Он слушает только `127.0.0.1:9999`, защищён отдельным server-only secret и используется HyBoard для накопленного трафика, текущей скорости и online-state каждого credential ID. Значение secret намеренно отсутствует в Git; оно хранится согласованно в Hysteria config и `/etc/hyboard/hyboard.env`.
+
+Для переноса на другой сервер добавлен отдельный disaster-recovery toolkit:
+
+- `deploy/recovery-inventory.sh` снимает не содержащую значений секретов инвентаризацию;
+- `deploy/create-recovery-bundle.sh` создаёт только age-зашифрованный bundle и использует SQLite online backup;
+- `deploy/verify-recovery-bundle.sh` расшифровывает во временный каталог, проверяет структуру и SHA-256;
+- `deploy/stage-recovery-bundle.sh` создаёт root-only staging, не меняя live-конфигурацию;
+- `deploy/restore-new-server.sh` восстанавливает Hysteria2/HyBoard только на чистом сервере и отказывается перезаписывать существующую систему;
+- [`SERVER_MIGRATION.md`](SERVER_MIGRATION.md) фиксирует полный порядок переноса, проверки, ротации и отдельную обработку management-plane.
+
+GitHub по-прежнему не содержит recovery bundle, `.p12`, CA private key, credentials, session secret, stats secret или реальную серверную конфигурацию. Для реальной готовности владелец должен создать age identity офлайн, выпустить bundle на сервере, скачать его, проверить расшифрование вне VPS и хранить минимум две копии отдельно от identity.
+
+Автоматическое восстановление намеренно не применяет Nginx/Let's Encrypt, Xray/3x-ui и FreeTurn/WireGuard. Серверный TLS зависит от нового адреса, а остальные контуры независимы и должны переноситься отдельно после подтверждения стабильности Hysteria2.

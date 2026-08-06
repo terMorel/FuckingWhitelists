@@ -69,7 +69,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         settings.probe_stale_seconds,
     )
 
-    app = FastAPI(title="Fucking Whitelists Control", docs_url=None, redoc_url=None)
+    app = FastAPI(title="BatyaVPN Control", docs_url=None, redoc_url=None)
     app.state.settings = settings
     app.state.db = db
     app.state.backend = backend

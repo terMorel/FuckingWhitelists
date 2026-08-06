@@ -3,10 +3,10 @@ requires = ["setuptools>=70", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fucking-whitelists-control"
+name = "batyavpn-control"
 version = "0.1.0"
 description = "A safe companion control panel for a native Hysteria 2 server"
-readme = "HYBOARD.md"
+readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   "argon2-cffi==23.1.0",

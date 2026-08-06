@@ -1,4 +1,4 @@
-# Внутренний контекст: нативный Hysteria2 и Fucking Whitelists Control
+# Внутренний контекст: нативный Hysteria2 и HyBoard
 
 Актуальность: **3 августа 2026 года**.
 
@@ -32,7 +32,7 @@
 3. Обсуждалась двухузловая схема наподобие «Hysteria2 до российского relay, затем зарубежный VPS», но российского/Yandex Cloud узла у пользователя нет. Дополнительный relay остаётся возможным будущим вариантом, а не необходимостью для текущего рабочего подключения.
 4. Нативный Hysteria2 на Frankfurt VPS показал работоспособность в мобильной сети: заработали видео, мессенджеры и веб.
 5. Пользователь хотел выдавать персональные ключи через удобный интерфейс. Перенос рабочего Hysteria2 внутрь 3x-ui был отклонён: панель не должна владеть транспортом и создавать риск потери скорости или стабильности.
-6. Выбран вариант с отдельной панелью **Fucking Whitelists Control (HyBoard)**. Она управляет существующим `hy-access`, а нативный Hysteria2 продолжает передавать трафик самостоятельно.
+6. Выбран вариант с отдельной панелью **HyBoard**. Она управляет существующим `hy-access`, а нативный Hysteria2 продолжает передавать трафик самостоятельно.
 
 Важный урок этой работы: если соединение уже работает, сначала фиксируется baseline и создаётся откат. Нельзя менять его transport/config/firewall ради удобства панели.
 
@@ -166,7 +166,7 @@ HyBoard (непривилегированный пользователь hyboard
 - права Unix socket `root:hyboard 0660`;
 - отсутствие временного SSH-ключа установочной сессии после завершения работ.
 
-Код панели был слит в `main` через PR #1. Код находится в `hyboard/`, установка в `deploy/`, тесты в `tests/`, пользовательская инструкция в [`HYBOARD.md`](HYBOARD.md).
+Код панели был слит в `main` через PR #1. Компонент физически изолирован в [`../panel/`](../panel/): код — `panel/hyboard/`, установка — `panel/deploy/`, тесты — `panel/tests/`.
 
 ## 10. Что GitHub позволяет восстановить, а что нет
 
@@ -235,7 +235,7 @@ FreeTurn/WireGuard и Xray/3x-ui резервировать отдельно, ч
 4. Проверить Hysteria локально и убедиться, что нужный UDP-порт слушается. Не устанавливать панель до успешного transport healthcheck.
 5. Восстановить `hy-access`, проверить его владельца/режим и выполнить безопасную read-only операцию `list`/`status`.
 6. Проверить подключение одним отдельным тестовым клиентом. Существующие ключи считать скомпрометированными, если старый сервер потерян нештатно; при необходимости ротировать их.
-7. Клонировать этот репозиторий и запустить `deploy/install.sh`.
+7. Клонировать этот репозиторий и запустить `panel/deploy/install.sh`.
 8. Восстановить `/etc/hyboard/hyboard.env` и базу только если им доверяют; иначе сгенерировать новый пароль/секрет сессии и начать новую audit database.
 9. Проверить четыре unit панели, loopback bind, Unix socket и полный тест «создать тестовый доступ → показать → отозвать».
 10. Только после стабильного обычного VPN отдельно восстанавливать Xray/3x-ui и FreeTurn/WireGuard из их собственных резервных копий.
@@ -293,7 +293,7 @@ ss -lunp | grep ':443'
 
 Перед любым действием:
 
-1. прочитать этот файл, [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md), [`INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md`](INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md) и [`HYBOARD.md`](HYBOARD.md);
+1. прочитать этот файл, [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md), [`INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md`](INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md) и [`../panel/README.md`](../panel/README.md);
 2. подтвердить, какой из двух рабочих контуров находится в scope;
 3. не запрашивать и не публиковать секреты без необходимости;
 4. снять read-only baseline и создать откат;
@@ -332,11 +332,11 @@ ss -lunp | grep ':443'
 
 Для переноса на другой сервер добавлен отдельный disaster-recovery toolkit:
 
-- `deploy/recovery-inventory.sh` снимает не содержащую значений секретов инвентаризацию;
-- `deploy/create-recovery-bundle.sh` создаёт только age-зашифрованный bundle и использует SQLite online backup;
-- `deploy/verify-recovery-bundle.sh` расшифровывает во временный каталог, проверяет структуру и SHA-256;
-- `deploy/stage-recovery-bundle.sh` создаёт root-only staging, не меняя live-конфигурацию;
-- `deploy/restore-new-server.sh` восстанавливает Hysteria2/HyBoard только на чистом сервере и отказывается перезаписывать существующую систему;
+- `panel/deploy/recovery-inventory.sh` снимает не содержащую значений секретов инвентаризацию;
+- `panel/deploy/create-recovery-bundle.sh` создаёт только age-зашифрованный bundle и использует SQLite online backup;
+- `panel/deploy/verify-recovery-bundle.sh` расшифровывает во временный каталог, проверяет структуру и SHA-256;
+- `panel/deploy/stage-recovery-bundle.sh` создаёт root-only staging, не меняя live-конфигурацию;
+- `panel/deploy/restore-new-server.sh` восстанавливает Hysteria2/HyBoard только на чистом сервере и отказывается перезаписывать существующую систему;
 - [`SERVER_MIGRATION.md`](SERVER_MIGRATION.md) фиксирует полный порядок переноса, проверки, ротации и отдельную обработку management-plane.
 
 GitHub по-прежнему не содержит recovery bundle, `.p12`, CA private key, credentials, session secret, stats secret или реальную серверную конфигурацию. Для реальной готовности владелец должен создать age identity офлайн, выпустить bundle на сервере, скачать его, проверить расшифрование вне VPS и хранить минимум две копии отдельно от identity.

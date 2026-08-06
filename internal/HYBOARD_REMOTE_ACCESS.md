@@ -19,10 +19,10 @@ VLESS-клиент → Xray TCP 443 → Xray
 
 ## Состав установки
 
-- `deploy/remote-access-baseline.sh` фиксирует порты, unit-файлы, checksum базы пользователей Hysteria и peers WireGuard до изменений;
-- `deploy/create-hyboard-client-pki.sh` создаёт отдельный клиентский CA и первый Android-сертификат;
-- `deploy/nginx-hyboard-mtls.conf.template` публикует только TCP/80 для ACME и TCP/8443 для панели;
-- `deploy/setup-hyboard-mtls.sh` включает конфигурацию Nginx и deploy-hook его перезагрузки после продления сертификата.
+- `panel/deploy/remote-access-baseline.sh` фиксирует порты, unit-файлы, checksum базы пользователей Hysteria и peers WireGuard до изменений;
+- `panel/deploy/create-hyboard-client-pki.sh` создаёт отдельный клиентский CA и первый Android-сертификат;
+- `panel/deploy/nginx-hyboard-mtls.conf.template` публикует только TCP/80 для ACME и TCP/8443 для панели;
+- `panel/deploy/setup-hyboard-mtls.sh` включает конфигурацию Nginx и deploy-hook его перезагрузки после продления сертификата.
 
 Скрипты намеренно не устанавливают пакеты и не выпускают публичный сертификат молча: эти действия зависят от окружения и должны выполняться поэтапно с проверкой baseline.
 
@@ -41,17 +41,17 @@ VLESS-клиент → Xray TCP 443 → Xray
 Пример вызовов после установки Nginx, Certbot и выпуска публичного сертификата:
 
 ```bash
-sudo bash deploy/remote-access-baseline.sh \
+sudo bash panel/deploy/remote-access-baseline.sh \
   /root/hyboard-backups/remote-access-preinstall-DATE
 
-sudo bash deploy/create-hyboard-client-pki.sh \
+sudo bash panel/deploy/create-hyboard-client-pki.sh \
   /root/private-input/ca-pass \
   /root/private-input/p12-pass \
   /root/hyboard-client-pki-DATE
 
-sudo bash deploy/setup-hyboard-mtls.sh \
+sudo bash panel/deploy/setup-hyboard-mtls.sh \
   SERVER_IP \
-  deploy/nginx-hyboard-mtls.conf.template \
+  panel/deploy/nginx-hyboard-mtls.conf.template \
   /root/hyboard-backups/remote-access-preinstall-DATE
 ```
 

@@ -1,6 +1,6 @@
 # 4. TURN, WebRTC, медиапоток и rtpopus
 
-[← WireGuard](03-wireguard.md) · [Оглавление](../README.md) · [Компоненты →](05-components.md)
+[← WireGuard](03-wireguard.md) · [Оглавление](README.md) · [Компоненты →](05-components.md)
 
 ## WebRTC простыми словами
 

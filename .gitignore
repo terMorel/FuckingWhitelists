@@ -12,3 +12,19 @@ htmlcov/
 *.log
 dist/
 build/
+
+# Recovery archives and credentials must never enter Git, even in a private repo.
+*.age
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+*.secret
+*.agekey
+hyboard-recovery-identity*
+recovery-*.tar
+recovery-*.tar.gz
+recovery-*.sha256
+hyboard-recovery/
+hyboard-restore-stage-*/

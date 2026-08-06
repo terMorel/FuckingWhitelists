@@ -79,6 +79,7 @@ ssh -L 28474:127.0.0.1:28474 root@SERVER_IP
 - [`HYBOARD.md`](HYBOARD.md) — возможности, безопасность, установка и проверка панели;
 - [`HYBOARD_MONITORING.md`](HYBOARD_MONITORING.md) — показатели, хранение, предупреждения, Telegram и внешние наблюдатели;
 - [`HYBOARD_REMOTE_ACCESS.md`](HYBOARD_REMOTE_ACCESS.md) — HTTPS/mTLS-доступ с Android без постоянного SSH-туннеля;
+- [`SERVER_MIGRATION.md`](SERVER_MIGRATION.md) — зашифрованный recovery bundle, проверка и безопасный перенос Hysteria2/HyBoard на чистый VPS;
 - [`INTERNAL_CONTEXT_HYSTERIA2_HYBOARD.md`](INTERNAL_CONTEXT_HYSTERIA2_HYBOARD.md) — решения текущего этапа, фактическая архитектура, правила продолжения работ и план аварийного восстановления;
 - [`INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md`](INTERNAL_CONTEXT_XRAY_VLESS_REALITY.md) — предыдущий контекст Xray/VLESS Reality и 3x-ui.
 
@@ -100,7 +101,7 @@ ssh -L 28474:127.0.0.1:28474 root@SERVER_IP
 
 В репозитории намеренно нет реальных адресов серверов, паролей, SSH-ключей, Hysteria URI, WireGuard-ключей, `obf-key`, сертификатов и готовых приватных конфигураций.
 
-Поэтому GitHub хранит код и знания, но **не является полной резервной копией сервера**. Для восстановления после потери VPS нужен отдельный зашифрованный офлайн-бэкап конфигурации и секретов. Его состав и порядок восстановления описаны в [`INTERNAL_CONTEXT_HYSTERIA2_HYBOARD.md`](INTERNAL_CONTEXT_HYSTERIA2_HYBOARD.md).
+Поэтому GitHub хранит код и знания, но **не является полной резервной копией сервера**. В репозитории есть инструменты для создания, проверки и восстановления отдельного age-зашифрованного recovery bundle, но сам bundle и ключ расшифрования всегда хранятся вне Git. Полная процедура приведена в [`SERVER_MIGRATION.md`](SERVER_MIGRATION.md).
 
 Базовые правила:
 

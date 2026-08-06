@@ -1,6 +1,6 @@
 # 3. WireGuard простыми словами
 
-[← Маршрут трафика](02-traffic-flow.md) · [Оглавление](../README.md) · [TURN и WebRTC →](04-turn-webrtc.md)
+[← Маршрут трафика](02-traffic-flow.md) · [Оглавление](README.md) · [TURN и WebRTC →](04-turn-webrtc.md)
 
 ## Что это такое
 

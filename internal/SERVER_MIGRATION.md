@@ -44,8 +44,8 @@ age-keygen -y hyboard-recovery-identity.txt
 ```bash
 sudo apt-get update
 sudo apt-get install -y age
-cd /root/FuckingWhitelists
-sudo bash deploy/create-recovery-bundle.sh \
+cd /root/BatyaVPN
+sudo bash panel/deploy/create-recovery-bundle.sh \
   --recipient 'age1PUBLIC_RECIPIENT' \
   --output /root/hyboard-recovery/recovery-$(date -u +%Y%m%dT%H%M%SZ).age
 ```
@@ -64,7 +64,7 @@ sudo bash deploy/create-recovery-bundle.sh \
 Для отдельного контура можно добавить точный путь, но только после его собственной проверки:
 
 ```bash
-sudo bash deploy/create-recovery-bundle.sh \
+sudo bash panel/deploy/create-recovery-bundle.sh \
   --recipient 'age1PUBLIC_RECIPIENT' \
   --output /root/hyboard-recovery/recovery-full-$(date -u +%Y%m%dT%H%M%SZ).age \
   --extra-path /etc/wireguard
@@ -79,7 +79,7 @@ sudo bash deploy/create-recovery-bundle.sh \
 На доверенной Linux-машине или в WSL:
 
 ```bash
-bash deploy/verify-recovery-bundle.sh \
+bash panel/deploy/verify-recovery-bundle.sh \
   --bundle recovery-YYYYMMDD.age \
   --identity hyboard-recovery-identity.txt \
   --expected-sha256 'SHA256_ИЗ_МЕНЕДЖЕРА_ПАРОЛЕЙ'
@@ -110,7 +110,7 @@ bash deploy/verify-recovery-bundle.sh \
 ## 5. Расшифровать только в root-only staging
 
 ```bash
-sudo bash deploy/stage-recovery-bundle.sh \
+sudo bash panel/deploy/stage-recovery-bundle.sh \
   --bundle /root/recovery-YYYYMMDD.age \
   --identity /root/hyboard-recovery-identity.txt \
   --expected-sha256 'SHA256_ИЗ_МЕНЕДЖЕРА_ПАРОЛЕЙ' \
@@ -124,9 +124,9 @@ sudo bash deploy/stage-recovery-bundle.sh \
 ## 6. Восстановить основной контур на чистом сервере
 
 ```bash
-sudo bash deploy/restore-new-server.sh \
+sudo bash panel/deploy/restore-new-server.sh \
   --stage /root/hyboard-restore-stage-YYYYMMDD \
-  --repo /root/FuckingWhitelists \
+  --repo /root/BatyaVPN/panel \
   --apply
 ```
 

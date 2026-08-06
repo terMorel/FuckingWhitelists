@@ -17,18 +17,19 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
+          cache-dependency-path: panel/pyproject.toml
       - name: Validate recovery shell scripts
         run: >-
           bash -n
-          deploy/recovery-common.sh
-          deploy/recovery-inventory.sh
-          deploy/create-recovery-bundle.sh
-          deploy/verify-recovery-bundle.sh
-          deploy/stage-recovery-bundle.sh
-          deploy/restore-new-server.sh
+          panel/deploy/recovery-common.sh
+          panel/deploy/recovery-inventory.sh
+          panel/deploy/create-recovery-bundle.sh
+          panel/deploy/verify-recovery-bundle.sh
+          panel/deploy/stage-recovery-bundle.sh
+          panel/deploy/restore-new-server.sh
       - name: Install project and test tools
-        run: python -m pip install -e '.[test]'
+        run: python -m pip install -e './panel[test]'
       - name: Run tests
-        run: pytest
+        run: pytest panel/tests
       - name: Run lint
-        run: ruff check .
+        run: ruff check panel

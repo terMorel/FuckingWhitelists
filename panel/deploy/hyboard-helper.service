@@ -1,21 +1,23 @@
 [Unit]
-Description=Fucking Whitelists Control
-After=network.target
+Description=BatyaVPN Control privileged broker
+After=local-fs.target
+Before=hyboard.service
 
 [Service]
 Type=simple
-User=hyboard
+User=root
 Group=hyboard
-EnvironmentFile=/etc/hyboard/hyboard.env
-WorkingDirectory=/var/lib/hyboard
-ExecStart=/opt/hyboard/.venv/bin/hyboard
+UMask=0007
+RuntimeDirectory=hyboard
+RuntimeDirectoryMode=0750
+ExecStart=/usr/bin/python3 /usr/local/libexec/hyboard-helperd
 Restart=on-failure
 RestartSec=3
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ProtectHome=true
-ReadWritePaths=/var/lib/hyboard
+ProtectHome=read-only
+ReadWritePaths=/etc/hysteria /root/hysteria-access /run/hyboard
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
@@ -25,3 +27,4 @@ MemoryDenyWriteExecute=true
 
 [Install]
 WantedBy=multi-user.target
+

@@ -1,4 +1,4 @@
-# Fucking Whitelists Control
+# HyBoard
 
 Отдельная панель для уже работающего нативного Hysteria2. Она создаёт персональные доступы через существующую утилиту `hy-access` и **не участвует в передаче VPN-трафика**.
 
@@ -23,7 +23,7 @@
 ```text
 Клиент ── Hysteria2 / UDP 443 ──> нативный hysteria-server ──> Интернет
 
-Браузер ── SSH-туннель ──> FW Control ── Unix socket ──> root broker ──> hy-access
+Браузер ── SSH-туннель ──> HyBoard ── Unix socket ──> root broker ──> hy-access
 ```
 
 Панель отсутствует в первой строке. После проверки токена Hysteria передаёт трафик самостоятельно. Остановка панели не роняет уже выданные ключи и не меняет UDP/443.
@@ -46,6 +46,7 @@
 Требуется Python 3.10+.
 
 ```bash
+cd panel
 python -m venv .venv
 source .venv/bin/activate
 pip install -e '.[test]'
@@ -59,9 +60,9 @@ HYBOARD_DEMO=1 hyboard
 Установщик рассчитан на существующую схему с `/usr/local/sbin/hy-access`, `/etc/hysteria/users.json` и `/root/hysteria-access`.
 
 ```bash
-git clone https://github.com/terMorel/FuckingWhitelists.git
-cd FuckingWhitelists
-sudo bash deploy/install.sh
+git clone https://github.com/terMorel/BatyaVPN.git
+cd BatyaVPN
+sudo bash panel/deploy/install.sh
 ```
 
 Установщик не перезапускает и не меняет Hysteria, Xray, WireGuard, Nginx или клиентские сертификаты. Он создаёт отдельного системного пользователя, панель, минутный таймер сроков доступа и минутный таймер безопасного сбора показателей.
@@ -84,12 +85,13 @@ sudo systemctl restart hyboard.service
 ## Проверка
 
 ```bash
+cd panel
 pytest
 ruff check .
 ```
 
-Настройка источника трафика, Telegram и внешних проверок приведена в [`HYBOARD_MONITORING.md`](HYBOARD_MONITORING.md). По умолчанию эти интеграции выключены: установка панели не меняет конфигурацию работающего Hysteria2.
+Настройка источника трафика, Telegram и внешних проверок приведена в [`../internal/HYBOARD_MONITORING.md`](../internal/HYBOARD_MONITORING.md). По умолчанию эти интеграции выключены: установка панели не меняет конфигурацию работающего Hysteria2.
 
 ## Доступ без SSH-туннеля
 
-Для телефона или постоянного браузерного доступа панель может быть опубликована на отдельном TCP/8443 через HTTPS с обязательным клиентским сертификатом. Эта схема сохраняет loopback-bind HyBoard и не занимает TCP/UDP 443. Пошаговая установка, Android-инструкция и откат описаны в [`HYBOARD_REMOTE_ACCESS.md`](HYBOARD_REMOTE_ACCESS.md).
+Для телефона или постоянного браузерного доступа панель может быть опубликована на отдельном TCP/8443 через HTTPS с обязательным клиентским сертификатом. Эта схема сохраняет loopback-bind HyBoard и не занимает TCP/UDP 443. Порядок установки и отката описан в [`../internal/HYBOARD_REMOTE_ACCESS.md`](../internal/HYBOARD_REMOTE_ACCESS.md).

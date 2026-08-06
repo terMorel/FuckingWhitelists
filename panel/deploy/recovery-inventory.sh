@@ -111,7 +111,9 @@ if db_path.exists():
 PY
 
 printf '\nRepository\n'
-for repo in /opt/hyboard /root/FuckingWhitelists; do
+# BatyaVPN is canonical; the previous checkout path remains detectable on servers
+# that have not renamed their local directory yet.
+for repo in /opt/hyboard /root/BatyaVPN /root/FuckingWhitelists; do
   if git -C "$repo" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     printf '%s: %s\n' "$repo" "$(git -C "$repo" rev-parse HEAD)"
   fi

@@ -10,7 +10,7 @@ usage() {
 Usage:
   sudo bash deploy/restore-new-server.sh \
     --stage /root/hyboard-restore-stage-NAME \
-    --repo /root/FuckingWhitelists \
+    --repo /root/BatyaVPN/panel \
     --apply
 
 This script intentionally works only on a clean target. It restores Hysteria and
@@ -97,5 +97,5 @@ systemctl restart hyboard.service
 systemctl is-active --quiet hyboard.service || recovery_fail "HyBoard failed to start; inspect journalctl -u hyboard"
 
 printf '\nCore restore completed.\n'
-printf 'Management-plane TLS and client certificates were NOT applied. Reissue the server certificate for the new address, then configure Nginx using SERVER_MIGRATION.md.\n'
+printf 'Management-plane TLS and client certificates were NOT applied. Reissue the server certificate for the new address, then configure Nginx using internal/SERVER_MIGRATION.md.\n'
 printf 'Do not delete the encrypted bundle or staging directory until client connectivity and traffic accounting are verified.\n'

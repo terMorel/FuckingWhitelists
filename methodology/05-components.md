@@ -1,6 +1,6 @@
 # 5. Роли всех компонентов
 
-[← TURN и WebRTC](04-turn-webrtc.md) · [Оглавление](../README.md) · [Ограничения →](06-limitations.md)
+[← TURN и WebRTC](04-turn-webrtc.md) · [Оглавление](README.md) · [Ограничения →](06-limitations.md)
 
 ## Телефон и приложения
 

@@ -24,7 +24,7 @@ install -d -m 0750 -o "$SERVICE_USER" -g "$SERVICE_USER" "$DATA_DIR"
 cp -a "$SOURCE_DIR/hyboard" "$APP_DIR/"
 install -d -m 0755 "$APP_DIR/deploy"
 install -o root -g root -m 0755 "$SOURCE_DIR/deploy/set-password.py" "$APP_DIR/deploy/set-password.py"
-cp "$SOURCE_DIR/pyproject.toml" "$SOURCE_DIR/HYBOARD.md" "$APP_DIR/"
+cp "$SOURCE_DIR/pyproject.toml" "$SOURCE_DIR/README.md" "$APP_DIR/"
 
 python3 -m venv "$APP_DIR/.venv"
 "$APP_DIR/.venv/bin/pip" install --disable-pip-version-check --no-cache-dir "$APP_DIR"
